@@ -34,16 +34,14 @@ def viwer_get():
 
 def playAudio(sound_file,fps,range_start,range_end):
    
+    length = (range_end - range_start)/fps
     start_frame = (range_start/fps)
     end_frame = ((range_end - 1)/fps)
-    # length = end_frame - start_frame
     if platform == "win32":
-        player = 'vlc --intf="dummy" --repeat --no-video \
-            --start-time="%f" --stop-time="%f" "%s"'\
-                %(start_frame, end_frame, os.path.abspath(sound_file))
+        player = 'ffplay -nodisp -loop 0 -vn -ss "%f" -t "%f" "%s"'\
+                %(start_frame, length, os.path.abspath(sound_file))
     else:
-        player = 'vlc --intf="dummy" --repeat --no-video \
-            --start-time="%f" --stop-time="%f" "%s"'\
+        player = 'ffplay -nodisp -loop 0 -vn -ss "%f" -t "%f" "%s"'\
                 %(start_frame, end_frame,sound_file)
 
     return player
@@ -94,9 +92,9 @@ def myCallback(thisParam, thisNode, thisGroup, app, userEdited):
     if thisParam == thisNode.panic:
         viwer_get().pause()
         if platform == "win32":
-            subprocess.Popen("Taskkill /IM vlc.exe /f")
+            subprocess.Popen("Taskkill /IM ffplay.exe /f")
         else:
-            subprocess.Popen("killall vlc", stdin = subprocess.PIPE, stdout = subprocess.PIPE, shell=True)
+            subprocess.Popen("killall ffplay", stdin = subprocess.PIPE, stdout = subprocess.PIPE, shell=True)
 
             
 
